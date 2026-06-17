@@ -1,6 +1,6 @@
-// Minimal presio example using plain Typst pages (no slide framework).
-// Compile with: typst compile examples/example.typ
-#import "@local/presio:0.1.0": media, speaker-notes
+// presio example: plain Typst pages (no slide framework).
+// Compile with: typst compile examples/plain/example.typ
+#import "@local/presio:0.2.0": media, speaker-notes
 
 #set page(paper: "presentation-16-9", margin: 1.5cm)
 #set text(size: 24pt)
@@ -24,9 +24,7 @@ Some intro prose.
 = Embedded GIF
 
 #media(
-  read("demo.gif", encoding: none),
-  name: "demo.gif",
-  placeholder: image("demo.gif"),
+  path("demo.gif"),
   width: 60%,
 )
 

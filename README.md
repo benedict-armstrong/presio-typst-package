@@ -11,8 +11,12 @@ template.
 ## Install
 
 ```typ
-#import "@preview/presio:0.1.0": media, speaker-notes
+#import "@preview/presio:0.2.0": media, speaker-notes
 ```
+
+Requires Typst 0.15 or newer (for the file `path` type). Users on Typst
+0.13–0.14 can pin to `@preview/presio:0.1.0`, which has a slightly more
+verbose bytes-based API.
 
 ## Usage
 
@@ -34,22 +38,18 @@ attachment, in source order.
 
 ### Embedded media (local file)
 
-Because of how Typst resolves file paths inside packages, the caller is
-responsible for `read`-ing the media bytes:
-
 ```typ
-#media(
-  read("figures/demo.gif", encoding: none),
-  name: "demo.gif",
-  placeholder: image("figures/demo.gif"),
-  width: 60%,
-)
+#media(path("figures/demo.gif"), width: 60%)
 ```
 
-The binary is embedded in the PDF via `pdf.attach` and a placement descriptor
-JSON is written alongside it. `placeholder` is optional `content` shown in the
-slide itself (Typst can render GIFs via `image(...)` — for MP4/WebM use a still
-image or omit `placeholder` to get a dark block).
+`path("…")` is Typst 0.15's file-path type — it resolves relative to the
+file that constructed it, so the package can `read()` and `image()` the
+target on the caller's behalf. The bytes are embedded in the PDF via
+`pdf.attach` and a placement descriptor JSON is written alongside it.
+
+By default the in-slide preview is `image(source)`. For MP4 / WebM
+(which Typst can't render directly) pass an explicit `placeholder:
+image("poster.png")`, or `placeholder: none` to get a dark block.
 
 ### Embedded media (URL)
 
@@ -78,20 +78,20 @@ the viewer can use to build an iframe embed.
 
 ## `media` parameters
 
-| Parameter      | Default | Notes                                                                                                  |
-| -------------- | ------- | ------------------------------------------------------------------------------------------------------ |
-| `source`       | —       | Either `bytes` (from `read(..., encoding: none)`) or a `http(s)://` URL string                         |
-| `name`         | `none`  | Required when `source` is bytes. Used as the PDF attachment filename and to sniff the MIME type.       |
-| `placeholder`  | `none`  | Optional `content` rendered as the in-slide preview (e.g. `image(...)`)                                |
-| `width`        | `auto`  | Length, ratio of the container width, or `auto` (natural width of `placeholder`, else container width) |
-| `height`       | `auto`  | Length, ratio, or `auto` (derived from `placeholder` / `aspect-ratio` / 16:9)                          |
-| `aspect-ratio` | `none`  | Width/height ratio, e.g. `16/9`                                                                        |
-| `autoplay`     | `true`  | Forwarded to the viewer                                                                                |
-| `loop`         | `true`  | Forwarded to the viewer                                                                                |
+| Parameter      | Default | Notes                                                                                                       |
+| -------------- | ------- | ----------------------------------------------------------------------------------------------------------- |
+| `source`       | —       | Either a `path` (from `path("…")`) or a `http(s)://` URL string                                             |
+| `name`         | `none`  | Override for the attachment filename / MIME sniff. Auto-derived from the path's filename when omitted.      |
+| `placeholder`  | `auto`  | `auto` → `image(source)` for files, dark block for URLs. `none` → force dark block. Any `content` → use it. |
+| `width`        | `auto`  | Length, ratio of the container width, or `auto` (natural width of `placeholder`, else container width)      |
+| `height`       | `auto`  | Length, ratio, or `auto` (derived from `placeholder` / `aspect-ratio` / 16:9)                               |
+| `aspect-ratio` | `none`  | Width/height ratio, e.g. `16/9`                                                                             |
+| `autoplay`     | `true`  | Forwarded to the viewer                                                                                     |
+| `loop`         | `true`  | Forwarded to the viewer                                                                                     |
 
 ## Supported media types
 
-The MIME is sniffed from the extension of `name` (bytes mode) or the URL (URL mode):
+The MIME is sniffed from the extension of the source path's filename (file mode) or the URL (URL mode):
 
 | Extension | MIME         |
 | --------- | ------------ |
@@ -132,6 +132,20 @@ Common fields: `kind`, `slide`, `id`, `mime`, `x_pt`, `y_pt`, `w_pt`, `h_pt`,
   "filename": "media-demo_gif.gif"
 }
 ```
+
+## Examples
+
+A complete deck for each supported workflow lives under `examples/`. Each
+folder is self-contained (its own `demo.gif`) and is compiled to PDF
+alongside the source.
+
+| Framework   | Source                                                         | Compiled PDF                                  |
+| ----------- | -------------------------------------------------------------- | --------------------------------------------- |
+| Plain Typst | [`examples/plain/example.typ`](examples/plain/example.typ)     | [`example.pdf`](examples/plain/example.pdf)   |
+| polylux     | [`examples/polylux/example.typ`](examples/polylux/example.typ) | [`example.pdf`](examples/polylux/example.pdf) |
+| touying     | [`examples/touying/example.typ`](examples/touying/example.typ) | [`example.pdf`](examples/touying/example.pdf) |
+
+Rebuild with `typst compile --root . examples/<framework>/example.typ examples/<framework>/example.pdf` from the repo root. The `--root .` flag is required so the file-`path` sandbox can resolve `demo.gif`.
 
 ## License
 

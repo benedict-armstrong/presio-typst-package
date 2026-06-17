@@ -1,6 +1,6 @@
 [package]
 name = "presio"
-version = "0.1.0"
+version = "0.2.0"
 entrypoint = "src/lib.typ"
 authors = ["Benedict Armstrong <benedict.armstrong@inf.ethz.ch>"]
 license = "MIT"
@@ -8,5 +8,5 @@ description = "Attach speaker notes and embedded media to PDF slides for presio.
 repository = "https://github.com/benedict-armstrong/presio-typst-package"
 keywords = ["presentation", "slides", "speaker-notes", "video", "pdf"]
 categories = ["visualization"]
-compiler = "0.13.0"
-exclude = ["examples/**", "README.md"]
+compiler = "0.15.0"
+exclude = ["examples/**", "tests/**"]
