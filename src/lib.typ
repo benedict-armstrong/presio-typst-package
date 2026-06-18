@@ -55,7 +55,14 @@
   aspect-ratio: none,
 ) = (
   layout(container => context {
-    let page-num = counter(page).get().first()
+    // Use the physical page (`here().page()`), not the logical page counter.
+    // Under touying, `counter(page)` returns the same value for every
+    // subslide of an overlay group, so content that appears on multiple
+    // subslides would collide on a single attachment name (and Typst errors
+    // on a duplicate attachment). `here().page()` advances per physical page,
+    // matching how the presio viewer flips through the PDF — and matching
+    // what `speaker-notes` already uses. (In polylux the two agree.)
+    let page-num = here().page()
     let is-path = type(source) == path
     let is-url = (
       type(source) == str

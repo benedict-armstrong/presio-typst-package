@@ -2,7 +2,7 @@
 // Compile with: typst compile examples/touying/example.typ
 #import "@preview/touying:0.7.4": *
 #import themes.simple: *
-#import "@preview/presio:0.2.0": media, speaker-notes
+#import "@preview/presio:0.2.1": media, speaker-notes
 
 #show: simple-theme.with(aspect-ratio: "16-9")
 
@@ -30,14 +30,18 @@ A touying deck wired up with `presio`.
 
 #media(
   "https://upload.wikimedia.org/wikipedia/commons/2/2c/Rotating_earth_%28large%29.gif",
-  width: 40%,
+  width: 30%,
   aspect-ratio: 1,
 )
 
+#pause
+
+Reveal Content
+
 == YouTube
 
-#media("https://www.youtube.com/watch?v=dQw4w9WgXcQ", width: 60%, aspect-ratio: 16/9)
+#media("https://www.youtube.com/watch?v=dQw4w9WgXcQ", width: 60%, aspect-ratio: 16 / 9)
 
 == Vimeo
 
-#media("https://vimeo.com/76979871", width: 60%, aspect-ratio: 16/9)
+#media("https://vimeo.com/76979871", width: 60%, aspect-ratio: 16 / 9)

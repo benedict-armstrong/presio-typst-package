@@ -11,7 +11,7 @@ template.
 ## Install
 
 ```typ
-#import "@preview/presio:0.2.0": media, speaker-notes
+#import "@preview/presio:0.2.1": media, speaker-notes
 ```
 
 Requires Typst 0.15 or newer (for the file `path` type). Users on Typst
