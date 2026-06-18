@@ -1,6 +1,6 @@
 // presio example: plain Typst pages (no slide framework).
 // Compile with: typst compile examples/plain/example.typ
-#import "@local/presio:0.2.0": media, speaker-notes
+#import "@preview/presio:0.2.0": media, speaker-notes
 
 #set page(paper: "presentation-16-9", margin: 1.5cm)
 #set text(size: 24pt)

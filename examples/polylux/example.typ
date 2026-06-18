@@ -1,7 +1,7 @@
 // presio example: polylux deck.
 // Compile with: typst compile examples/polylux/example.typ
 #import "@preview/polylux:0.4.0": *
-#import "@local/presio:0.2.0": media, speaker-notes
+#import "@preview/presio:0.2.0": media, speaker-notes
 
 #set page(paper: "presentation-16-9", margin: 1.5cm)
 #set text(size: 24pt)
