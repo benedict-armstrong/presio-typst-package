@@ -22,6 +22,11 @@
 
 #pagebreak()
 
+= Local video (mp4, auto placeholder → dark block)
+#media(path("demo.mp4"), width: 100%)
+
+#pagebreak()
+
 = Plain URL
 #media(
   "https://example.com/clip.mp4",

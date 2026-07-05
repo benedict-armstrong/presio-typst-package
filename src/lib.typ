@@ -28,8 +28,10 @@
 //
 // `source` is one of:
 //   - a `path` (constructed with `path("figures/demo.gif")` at the call
-//     site): a local file. The bytes are read and attached to the PDF;
-//     the in-slide preview defaults to `image(source)`.
+//     site): a local file. The bytes are read and attached to the PDF.
+//     For image formats (png, jpg, gif, svg, webp) the in-slide preview
+//     defaults to `image(source)`; video files (mp4, webm) get a dark
+//     block unless an explicit `placeholder` is given.
 //   - a string starting with "http://" or "https://": a URL. Nothing is
 //     attached to the PDF; the viewer fetches the URL at presentation
 //     time. YouTube and Vimeo URLs are detected automatically.
@@ -38,8 +40,8 @@
 // explicitly to override the attachment filename / MIME sniffing.
 //
 // `placeholder`:
-//   - `auto` (default): for file mode, use `image(source)`; for URLs,
-//     draw a dark block.
+//   - `auto` (default): for local image files, use `image(source)`;
+//     for videos and URLs, draw a dark block.
 //   - `none`: force a dark block.
 //   - any `content`: rendered as the preview.
 //
@@ -103,8 +105,12 @@
       _mime-for-ext(ext)
     }
 
+    // `image()` can't decode video files, so the auto-preview only applies
+    // to extensions Typst can actually render; videos fall back to the
+    // dark block (pass an explicit `placeholder` for a poster frame).
+    let image-exts = ("png", "jpg", "jpeg", "gif", "svg", "svgz", "webp")
     let resolved-placeholder = if placeholder == auto {
-      if is-path { image(source) } else { none }
+      if is-path and ext in image-exts { image(source) } else { none }
     } else { placeholder }
 
     let w = if width == auto {
