@@ -8,6 +8,10 @@ so they can be presented with the [presio.xyz](https://presio.xyz) viewer.
 only contributes two functions; layout and slide flow are up to your existing
 template.
 
+[![Present the Touying demo](https://img.shields.io/badge/Present%20the%20Touying%20demo-7C3AED)](https://presio.xyz/present?from=https://github.com/benedict-armstrong/presio-typst-package/blob/main/examples/touying/example.pdf)
+[![Present the polylux demo](https://img.shields.io/badge/Present%20the%20polylux%20demo-7C3AED)](https://presio.xyz/present?from=https://github.com/benedict-armstrong/presio-typst-package/blob/main/examples/polylux/example.pdf)
+[![Present the plain demo](https://img.shields.io/badge/Present%20the%20plain%20demo-7C3AED)](https://presio.xyz/present?from=https://github.com/benedict-armstrong/presio-typst-package/blob/main/examples/plain/example.pdf)
+
 ## Install
 
 ```typ
