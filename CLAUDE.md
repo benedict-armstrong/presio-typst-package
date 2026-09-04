@@ -109,20 +109,20 @@ Implementation: each call drops a labeled `metadata` element (`<_presio-notes>`)
 
 Reference: <https://github.com/typst/packages/blob/main/README.md> and `docs/manifest.md`.
 
-1. **Develop locally** with the preview-namespace symlink above. Smoke-test the three `examples/<framework>/example.typ` decks (compile each with `--root .`). Inspect attachments with `pdfdetach -list out.pdf`.
-2. **Push to GitHub** (`benedict-armstrong/presio-typst-package`). Tag `v<version>` when cutting a release.
-3. **Fork `typst/packages`** (already done at `benedict-armstrong/typst-packages`, cloned to `~/Projects/typst-packages/`). The fork's `upstream` remote points at `typst/packages`.
-4. **Create release branch** `presio-<version>` in the fork. Copy `src/`, `typst.toml`, `README.md`, `LICENSE` into `packages/preview/presio/<version>/`. No `examples/`, no git artifacts.
-5. **Push and open PR** against `typst/packages:main` from the fork branch. Use `gh pr create`.
-6. **Watch CI** (`typst-package-check`). Bundler builds the package; the linter checks the manifest. Common issues:
+1. **Bump `version` in `typst.toml`**, then update the README to match: the `@preview/presio:<version>` install snippet and every `/blob/v<version>/` example permalink. `scripts/presio-check.sh` prints a `STALE` line when they disagree (see `scripts/_check_readme.py`); prose that deliberately names an older version, like the 0.1.0 note for Typst 0.13–0.14, is ignored.
+2. **Run `scripts/test.sh`, then `scripts/presio-check.sh`.** The latter rebuilds `examples/*/example.pdf` **in place** — those committed PDFs are what the README's "Present the … demo" badges serve, so a release that doesn't rebuild them ships demos of the *previous* version's behaviour (that happened for 0.2.2, and only surfaced when the packages linter flagged the badge URLs). Builds are pinned with `SOURCE_DATE_EPOCH`, so an unchanged deck rebuilds byte-identically; the script prints a `REBUILT` line listing any demo PDF that actually changed and needs committing. Inspect attachments with `pdfdetach -list out.pdf` if something looks off.
+3. **Commit, then tag `v<version>` and push** the branch and the tag to `benedict-armstrong/presio-typst-package`. The README permalinks resolve against that tag, so it has to exist *and* contain the rebuilt PDFs before the badges work.
+4. **Sync the `typst/packages` fork.** It lives at `benedict-armstrong/typst-packages`, cloned to `~/Projects/typst-packages/`, with `upstream` pointing at `typst/packages`. It goes stale fast — `git fetch upstream main` takes a couple of minutes and can exceed a default command timeout.
+5. **Create release branch** `presio-<version>` off `upstream/main`. Copy `src/`, `typst.toml`, `README.md`, `LICENSE` into `packages/preview/presio/<version>/`. No `examples/`, no git artifacts. Never edit an already-published version directory. Commit as `presio:<version>`, matching upstream's convention.
+6. **Push and open the PR** against `typst/packages:main` with `gh pr create`. The body describes each fix and confirms authorship of the previous versions.
+7. **Watch CI.** `Lint` and `Test` are GitHub Actions; `@preview/presio:<version>` is a separate check from typst.app whose conclusion shows as *failure* even when it reports only warnings, so read `output.summary` rather than the bucket. Fetch the details with `gh api repos/typst/packages/check-runs/<id>/annotations`. Common findings:
+   - GitHub URLs pointing at `blob/main/…` — use a tag permalink instead (this is what step 1 guards against).
    - Excluding `README.md` triggers a warning — **do not exclude README.md** in `typst.toml`.
    - Author email mismatch with the git committer can be flagged.
    - `categories` must come from the allowed list — we use `visualization`.
-7. **Respond to maintainer review.** Once merged, `@preview/presio:<version>` becomes globally available (with some indexing delay).
+8. **Respond to maintainer review.** Once merged, `@preview/presio:<version>` becomes globally available (with some indexing delay).
 
-For subsequent releases: bump `version` in `typst.toml`, create a new `packages/preview/presio/<new-version>/` directory in the fork (never edit a published version), open a new PR.
-
-Active PR: <https://github.com/typst/packages/pull/4894> for `presio:0.1.0`. v0.2.0 (Typst 0.15+ `path` API) is a separate forthcoming PR. v0.2.1 (overlay/`#pause` fix — key sidecars on `here().page()` instead of `counter(page)`) is PR <https://github.com/typst/packages/pull/5105> (branch `presio-0.2.1` in the fork).
+Merged so far: [0.1.0](https://github.com/typst/packages/pull/4894), [0.2.0](https://github.com/typst/packages/pull/5098), [0.2.1](https://github.com/typst/packages/pull/5105), [0.2.2](https://github.com/typst/packages/pull/5262). [0.2.3](https://github.com/typst/packages/pull/5756) (alignment placement, file reuse, URL anchoring) is open with all checks green.
 
 ## Manifest essentials (`typst.toml`)
 
