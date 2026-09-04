@@ -15,7 +15,7 @@ template.
 ## Install
 
 ```typ
-#import "@preview/presio:0.2.2": media, speaker-notes
+#import "@preview/presio:0.2.3": media, speaker-notes
 ```
 
 Requires Typst 0.15 or newer (for the file `path` type). Users on Typst
@@ -70,9 +70,11 @@ Nothing is attached to the PDF; the viewer fetches the URL at presentation time.
 ### YouTube / Vimeo
 
 URLs from YouTube (`youtube.com/watch?v=…`, `youtu.be/…`, `youtube.com/embed/…`,
-`youtube.com/shorts/…`, `youtube-nocookie.com/embed/…`) and Vimeo
-(`vimeo.com/<id>`, `player.vimeo.com/video/<id>`) are detected automatically and
-emitted with `kind: "youtube"` / `kind: "vimeo"` plus an extracted `video_id`
+`youtube.com/shorts/…`, `youtube.com/live/…`, `youtube-nocookie.com/embed/…`,
+and any subdomain such as `m.youtube.com`) and Vimeo (`vimeo.com/<id>`,
+`vimeo.com/video/<id>`, `player.vimeo.com/video/<id>`,
+`vimeo.com/channels/<channel>/<id>`, `vimeo.com/groups/<group>/videos/<id>`)
+are detected automatically and emitted with `kind: "youtube"` / `kind: "vimeo"` plus an extracted `video_id`
 the viewer can use to build an iframe embed.
 
 ```typ

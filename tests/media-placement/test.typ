@@ -3,7 +3,7 @@
 // and multi-column flow all shift it. `layout`'s `container` also has to be
 // the *innermost* region so ratio widths resolve against the right box.
 #import "/src/lib.typ": media
-#import "/tests/_geometry.typ": check
+#import "/tests/_sidecar.typ": check
 
 // content box: 560pt x 300pt at (20pt, 20pt)
 #set page(width: 600pt, height: 340pt, margin: 20pt)

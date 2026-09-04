@@ -3,7 +3,7 @@
 // recorded `here().position()` — the position of the *context element*, which
 // alignment never moves — so a centered video was reported at the left margin.
 #import "/src/lib.typ": media
-#import "/tests/_geometry.typ": check
+#import "/tests/_sidecar.typ": check
 
 // content box: 560pt x 300pt at (20pt, 20pt)
 #set page(width: 600pt, height: 340pt, margin: 20pt)

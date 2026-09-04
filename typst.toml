@@ -1,6 +1,6 @@
 [package]
 name = "presio"
-version = "0.2.2"
+version = "0.2.3"
 entrypoint = "src/lib.typ"
 authors = ["Benedict Armstrong <benedict.armstrong@inf.ethz.ch>"]
 license = "MIT"

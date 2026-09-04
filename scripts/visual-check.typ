@@ -61,3 +61,35 @@
 #slide[6 — nested `pad` + `block(inset:)`][
   #pad(x: 80pt, block(inset: 20pt, stroke: 0.5pt + blue, demo("inside padding", 300pt, 169pt, "nested")))
 ]
+
+#slide[7 — same local file, reused (1/2)][
+  #align(center, media(path("demo.gif"), name: "reused.gif", width: 260pt))
+  The bytes are attached once for the whole document; each slide gets its own
+  sidecar. Reusing a file used to be a hard compile error.
+]
+
+#slide[8 — same local file, reused (2/2)][
+  #align(right, media(path("demo.gif"), name: "reused.gif", width: 200pt))
+]
+
+#slide[9 — Vimeo, and a plain remote URL][
+  #grid(
+    columns: (1fr, 1fr),
+    gutter: 20pt,
+    media("https://vimeo.com/76979871", width: 340pt, height: 191pt),
+    media(
+      "https://upload.wikimedia.org/wikipedia/commons/2/2c/Rotating_earth_%28large%29.gif",
+      width: 340pt,
+      height: 191pt,
+    ),
+  )
+  #speaker-notes[Left is a Vimeo embed, right is a plain URL fetched by the viewer.]
+]
+
+#slide[10 — YouTube `/live/` URL][
+  #align(center + horizon, media(
+    "https://www.youtube.com/live/doIN9QpDQMI",
+    width: 400pt,
+    height: 225pt,
+  ))
+]

@@ -5,11 +5,10 @@
 // `pdf.attach` calls, Typst would reject the duplicate filename and
 // compilation would fail.
 //
-// We deliberately avoid `#context { query(...) ... }` introspection in
-// the test body: that forces Typst into extra convergence passes which
-// race with the dedup logic and double-emit. Real callers don't
-// typically introspect the metadata trail, so the example deck and
-// real decks compile cleanly.
+// Dedup is counter-based, so it is stable under extra convergence passes;
+// `tests/speaker-notes-pages` asserts that directly by querying the metadata
+// trail (and by putting an `outline()` in the document). An earlier
+// y-position-based dedup did double-emit under introspection.
 #import "/src/lib.typ": speaker-notes
 
 #set page(paper: "presentation-16-9", margin: 1cm)

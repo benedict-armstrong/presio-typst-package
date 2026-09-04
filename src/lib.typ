@@ -10,17 +10,25 @@
   "application/octet-stream"
 }
 
+// Anchored at the scheme so the id is only picked up when YouTube is the
+// actual host — an unanchored pattern also matches a YouTube link that merely
+// appears inside some other site's query string. `(?:[A-Za-z0-9-]+\.)*` covers
+// `www.`, `m.`, and a bare host.
 #let _youtube-id(url) = {
   let m = url.match(
     regex(
-      "(?:youtube\.com/watch\?(?:[^ ]*&)?v=|youtu\.be/|youtube(?:-nocookie)?\.com/embed/|youtube\.com/shorts/)([A-Za-z0-9_-]{11})",
+      "^https?://(?:[A-Za-z0-9-]+\.)*(?:youtube(?:-nocookie)?\.com/(?:watch\?(?:[^ ]*&)?v=|embed/|shorts/|live/)|youtu\.be/)([A-Za-z0-9_-]{11})",
     ),
   )
   if m != none { m.captures.first() } else { none }
 }
 
 #let _vimeo-id(url) = {
-  let m = url.match(regex("vimeo\.com/(?:video/|channels/[^/]+/|groups/[^/]+/videos/)?(\d+)"))
+  let m = url.match(
+    regex(
+      "^https?://(?:[A-Za-z0-9-]+\.)*vimeo\.com/(?:video/|channels/[^/]+/|groups/[^/]+/videos/)?(\d+)",
+    ),
+  )
   if m != none { m.captures.first() } else { none }
 }
 
@@ -147,10 +155,11 @@
     // and read its position back through introspection instead.
     // The anchor carries the resolved size too, so the whole geometry that
     // goes into the sidecar is observable from a test via `query`.
-    let anchor = [#metadata((id: safe-id, w: w, h: h)) <_presio-media-anchor>]
-    let anchors = query(<_presio-media-anchor>).filter(el => (
-      el.value.id == safe-id and el.location().page() == page-num
-    ))
+    let src-key = if is-path { repr(source) } else { source }
+    let anchor = [#metadata((id: safe-id, src: src-key, kind: kind, mime: mime, w: w, h: h)) <_presio-media-anchor>]
+    let same-id = query(<_presio-media-anchor>).filter(el => el.value.id == safe-id)
+
+    let anchors = same-id.filter(el => el.location().page() == page-num)
     let pos = if anchors.len() > 0 {
       anchors.first().location().position()
     } else {
@@ -161,7 +170,21 @@
       "media-" + safe-id + "." + ext
     } else { none }
 
-    if kind == "file" {
+    // The binary is attached once for the whole document, on the lowest page
+    // that references it — the name has no page in it, so re-attaching per
+    // slide is a hard "attached twice" error. That bites whenever one file is
+    // reused (a logo on every slide) and, notably, whenever file media sits in
+    // a touying overlay group: `#pause` repeats it across subslide pages.
+    // `same-src` is empty on the pre-introspection pass, when attaching would
+    // duplicate; the later passes settle on exactly one attach.
+    //
+    // Keyed on (id, source) rather than id alone: two *different* sources can
+    // normalise to one `safe-id` (`a-b.gif` and `a_b.gif` both give
+    // `a_b_gif`), and those must still each attach under that name so Typst
+    // raises "attached twice" — a loud collision beats silently serving one
+    // file in place of the other. The fix at the call site is `name:`.
+    let same-src = same-id.filter(el => el.value.src == src-key)
+    if kind == "file" and same-src.len() > 0 and page-num == calc.min(..same-src.map(el => el.location().page())) {
       pdf.attach(
         media-filename,
         read(source, encoding: none),

@@ -5,7 +5,7 @@
 //   - a block pushed to the next page by overflow is reported on the page it
 //     lands on, not the page the call was written on.
 #import "/src/lib.typ": media
-#import "/tests/_geometry.typ": check, geometry
+#import "/tests/_sidecar.typ": check, sidecars
 
 // content box: 520pt x 120pt at (40pt, 40pt)
 #set page(
@@ -31,5 +31,5 @@
   check("https___example_com_pushed_mp4", page: 2, x: 40pt, y: 40pt, w: 100pt, h: 56.25pt)
 
   // Exactly three anchors total: two header runs plus the pushed block.
-  assert.eq(geometry().len(), 3)
+  assert.eq(sidecars().len(), 3)
 }
