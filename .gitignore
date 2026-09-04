@@ -1,0 +1,5 @@
+# tytanic scratch output
+tests/*/out/
+tests/*/diff/
+# scripts/presio-check.sh build products
+build/

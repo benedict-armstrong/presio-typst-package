@@ -139,7 +139,23 @@
     } else {
       w * 9 / 16
     }
-    let pos = here().position()
+    // The position of the *context element* is where the media call appears
+    // in the flow, not where the block is finally laid out: an enclosing
+    // `align(center)` (or any alignment / placement) moves the block but not
+    // the context element, so `here().position()` reports the un-aligned
+    // origin. Drop an out-of-flow anchor at the block's own top-left corner
+    // and read its position back through introspection instead.
+    // The anchor carries the resolved size too, so the whole geometry that
+    // goes into the sidecar is observable from a test via `query`.
+    let anchor = [#metadata((id: safe-id, w: w, h: h)) <_presio-media-anchor>]
+    let anchors = query(<_presio-media-anchor>).filter(el => (
+      el.value.id == safe-id and el.location().page() == page-num
+    ))
+    let pos = if anchors.len() > 0 {
+      anchors.first().location().position()
+    } else {
+      here().position()
+    }
 
     let media-filename = if kind == "file" {
       "media-" + safe-id + "." + ext
@@ -188,10 +204,13 @@
       fill: if resolved-placeholder == none { rgb("#222") } else { none },
       radius: 6pt,
       clip: true,
-      if resolved-placeholder != none {
-        resolved-placeholder
-      } else {
-        align(center + horizon, text(fill: white)[▶ #ref-name])
+      {
+        place(top + left, anchor)
+        if resolved-placeholder != none {
+          resolved-placeholder
+        } else {
+          align(center + horizon, text(fill: white)[▶ #ref-name])
+        }
       },
     )
   })
